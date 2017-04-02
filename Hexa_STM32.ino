@@ -1,10 +1,9 @@
 #include "hexaServo.h"
-//#include "PS2X_lib.h"
 #include <PS2X_lib.h>
 
 
-int SPI_freq = 500000; 
-SPIClass spi(2);
+int SPI_freq = 500000;    // 500kHz SPI frequency for PS2 controller
+SPIClass spi(2);          // SPI 2 used in this project
 PS2X ps2x(spi, SPI_freq); // create PS2 Controller Class
 
 
@@ -33,15 +32,42 @@ double stepSize = 0.0;
 int height = 0;
 double angle =0;
 
+int pin_servo0 = 3;
+int pin_servo1 = 4;
+int pin_servo2 = 5;
+int pin_servo3 = 8;
+int pin_servo4 = 9;
+int pin_servo5 = 10;
+int pin_servo6 = 11;
+int pin_servo7 = 15;
+int pin_servo8 = 16;
+int pin_servo9 = 25;
+int pin_servo10 = 26;
+int pin_servo11 = 27;
 
 void setup(){
+
+/* attaches the servo on the pin number
+/* 
+ *  Servo mapping
+ *  0/1 _____ 7/6
+ *     |     |
+ *  2/3|  ^  |9/8
+ *     |_____|
+ *  4/5       11/10
+ */
+
+setting_pin_servo(pin_servo0,pin_servo1,pin_servo2,pin_servo3,pin_servo4,pin_servo5,pin_servo6,pin_servo7,pin_servo8,pin_servo9,pin_servo10,pin_servo11); 
+
+
+
 
   Serial.begin(57600);
   delay(4000);
   Serial.println();
   Serial.println( "Serial connexion established" );
 
-   error = ps2x.config_gamepad(31);   //setup GamePad(clock, command, attention, data) pins, check for error
+   error = ps2x.config_gamepad(31);   //SPI number (SPI1 or SP2) is already defined when SPIClass is created. Here it is just to define the pin for attention
  
   if (error == 1){
     Serial.println();
@@ -50,12 +76,11 @@ void setup(){
     Serial.println("PS2 gamepad found");
   }
 
-//  g_hexaAngle = 0;
-//  g_hexaSpeed = 0;
+
   hexaServoInit();
   hexaHoming();
   delay(1000);
-//  hexaMove( 3, 0, 1, 0 );
+  hexaMove( 300, 0, 1, 0 );
   Serial.println();
   Serial.println( "Home position set" );
 
@@ -126,19 +151,7 @@ else if(ps2x.Button(PSB_CIRCLE)){
   }  
 
 
-
 else if( ps2x.Analog(PSS_LY) >=150 || ps2x.Analog(PSS_LY) <=110 ||ps2x.Analog(PSS_LX) >= 150 ||ps2x.Analog(PSS_LX) <= 110 ){
-//  Serial.println("\nLeft analog stick ");
-//  Serial.print(ps2x.Analog(PSS_LX), DEC);
-//  Serial.print(",");
-//  Serial.print(ps2x.Analog(PSS_LY), DEC); 
-// Serial.print(ps2x.Analog(PSS_LX), DEC);
-// Lx =  (Lx << 255) | ps2x.Analog(PSS_LX);
-// Serial.print(ps2x.Analog(PSS_LY), DEC);
-// Ly =  (Ly << 255) | ps2x.Analog(PSS_LY);
-//  double stepSize = ((double)Ly-127)/127.0;
-//  double curve = ((double)Lx-127)/127.0;
-
 
 if (ps2x.Analog(PSS_LY) <= 40){ stepSize= 1;
 }else if (ps2x.Analog(PSS_LY) <= 70){ stepSize= 0.75;
@@ -166,10 +179,6 @@ if (ps2x.Analog(PSS_RX) <= 40){ curve= 1;
   hexaMove( stepSize, curve, 1, height );
   ps2x.read_gamepad();
 }
-
-
-
-
 
 
   delay(20);  

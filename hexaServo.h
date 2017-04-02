@@ -2,8 +2,7 @@
 #define _HEXASERVO_H_
 
 #include <Wire.h>
-#include <Adafruit_PWMServoDriver.h>
-
+#include <Servo.h>
 
 /* 
  *  Servo index remapping
@@ -13,21 +12,7 @@
  *     |_____|
  *  4/5       11/10
  */
-#define _SERVO0_ 0
-#define _SERVO1_ 2
-#define _SERVO2_ 5
-#define _SERVO3_ 6
-#define _SERVO4_ 14
-#define _SERVO5_ 12
-#define _SERVO6_ 1
-#define _SERVO7_ 3
-#define _SERVO8_ 4
-#define _SERVO9_ 7
-#define _SERVO10_ 15
-#define _SERVO11_ 13
 
-/* PWM frequency (take care of change in home position to avoid damage) */
-#define _PWMFREQ_ 50
 
 /* Servo home position 
  * From 0 (duty cycle = 0%) to 4096 (duty cycle = 100%)
@@ -37,11 +22,11 @@
 #define _SERVOHOME0_ 238    
 #define _SERVOHOME1_ 288
 #define _SERVOHOME2_ 232
-#define _SERVOHOME3_ 270 //283
+#define _SERVOHOME3_ 270 
 #define _SERVOHOME4_ 340
-#define _SERVOHOME5_ 275  //288
+#define _SERVOHOME5_ 275  
 #define _SERVOHOME6_ 365
-#define _SERVOHOME7_ 285  //295
+#define _SERVOHOME7_ 285  
 #define _SERVOHOME8_ 352
 #define _SERVOHOME9_ 276
 #define _SERVOHOME10_ 344   
@@ -70,6 +55,13 @@
 /* Accuracy of the movement */
 #define _ERRLENGHT_ 0.01
 #define _ERRANGLE_ 0.01
+
+
+/* Convert Ducy Cycle to us to migrate code from adafruit lib to servo lib */
+int hexaDCtoUS(int DC);
+
+/* attach pin to servo */
+void setting_pin_servo( int pin_S0, int pin_S1, int pin_S2, int pin_S3, int pin_S4, int pin_S5, int pin_S6, int pin_S7, int pin_S8, int pin_S9, int pin_S10, int pin_S11);
 
 /* Abstraction functions */
 int hexaServoMap( int index );

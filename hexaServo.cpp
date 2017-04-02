@@ -1,38 +1,56 @@
 #include "hexaServo.h"
 
-Adafruit_PWMServoDriver g_pwm = Adafruit_PWMServoDriver();
+
+
+  // create servo object to control a servo
+Servo myservo0;
+Servo myservo1;
+Servo myservo2;
+Servo myservo3;
+Servo myservo4;
+Servo myservo5;
+Servo myservo6;
+Servo myservo7;
+Servo myservo8;
+Servo myservo9;
+Servo myservo10;
+Servo myservo11;
+
+
+Servo myservo[12]={myservo0,myservo1,myservo2,myservo3,myservo4,myservo5,myservo6,myservo7,myservo8,myservo9,myservo10,myservo11};
+
+
+
 int g_hexaPos[12];
 
-int hexaServoMap( int index )
-{
-  switch( index )
-  {
-    case 0:
-      return _SERVO0_;
-    case 1:
-	    return _SERVO1_;
-    case 2:
-	    return _SERVO2_;
-    case 3:
-	    return _SERVO3_;
-    case 4:
-	    return _SERVO4_;
-    case 5:
-	    return _SERVO5_;
-    case 6:
-	    return _SERVO6_;
-    case 7:
-	    return _SERVO7_;
-    case 8:
-	    return _SERVO8_;
-    case 9:
-	    return _SERVO9_;
-    case 10:
-      return _SERVO10_;
-    case 11:
-	    return _SERVO11_;
-  }
+void setting_pin_servo( int pin_S0, int pin_S1, int pin_S2, int pin_S3, int pin_S4, int pin_S5, int pin_S6, int pin_S7, int pin_S8, int pin_S9, int pin_S10, int pin_S11){
+
+  // attach the servo on the pin number
+myservo0.attach(pin_S0);
+myservo1.attach(pin_S1);
+myservo2.attach(pin_S2);
+myservo3.attach(pin_S3);
+myservo4.attach(pin_S4);
+myservo5.attach(pin_S5);
+myservo6.attach(pin_S6);
+myservo7.attach(pin_S7);
+myservo8.attach(pin_S8);
+myservo9.attach(pin_S9);
+myservo10.attach(pin_S10);
+myservo11.attach(pin_S11);
 }
+
+
+int hexaDCtoUS(int DC){
+  // From 0 (duty cycle = 0%) to 4096 (duty cycle = 100%)
+  // For used servo pulse duration is from 500us to 2500us
+  // Frequency : 50Hz
+  int US;
+  US = map(DC, 0, 4096, 0, 20000);
+  return US;
+}
+
+
 
 int hexaServoHome( int index )
 {
@@ -67,8 +85,6 @@ int hexaServoHome( int index )
 
 void hexaServoInit()
 {
-  g_pwm.begin();
-  g_pwm.setPWMFreq( _PWMFREQ_ );
   hexaHoming();
 }
 
@@ -78,7 +94,8 @@ void hexaHoming()
 
   for( i = 0; i < 12; i++ )
   {
-	  g_pwm.setPWM( hexaServoMap( i ), 0, hexaServoHome( i ) );
+//  g_pwm.setPWM( hexaServoMap( i ), 0, hexaServoHome( i ) );
+    myservo[i].writeMicroseconds(hexaDCtoUS(hexaServoHome(i)));
     g_hexaPos[ i ] = hexaServoHome( i );
   }
 }
@@ -94,12 +111,14 @@ void hexaSetPos( int index, int pos )
 {
   if( 6 > index )
   {
-    g_pwm.setPWM( hexaServoMap( index ), 0, hexaServoHome( index ) + pos );
+//  g_pwm.setPWM( hexaServoMap( index ), 0, hexaServoHome( index ) + pos );
+    myservo[index].writeMicroseconds(hexaDCtoUS(hexaServoHome(index)  + pos));
     g_hexaPos[ index ] = hexaServoHome( index ) + pos;
   }
   else
   {
-    g_pwm.setPWM( hexaServoMap( index ), 0, hexaServoHome( index ) - pos );
+//  g_pwm.setPWM( hexaServoMap( index ), 0, hexaServoHome( index ) - pos );
+    myservo[index].writeMicroseconds(hexaDCtoUS(hexaServoHome(index)  - pos));
     g_hexaPos[ index ] = hexaServoHome( index ) - pos;
   }
   delay( _STDBREAK_ );
