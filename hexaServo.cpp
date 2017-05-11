@@ -1,7 +1,5 @@
 #include "hexaServo.h"
 
-
-
   // create servo object to control a servo
 Servo myservo0;
 Servo myservo1;
@@ -16,9 +14,7 @@ Servo myservo9;
 Servo myservo10;
 Servo myservo11;
 
-
-Servo myservo[12]={myservo0,myservo1,myservo2,myservo3,myservo4,myservo5,myservo6,myservo7,myservo8,myservo9,myservo10,myservo11};
-
+Servo myservo[12];
 
 
 int g_hexaPos[12];
@@ -38,6 +34,13 @@ myservo8.attach(pin_S8);
 myservo9.attach(pin_S9);
 myservo10.attach(pin_S10);
 myservo11.attach(pin_S11);
+
+
+Servo myservo_attached[12]={myservo0,myservo1,myservo2,myservo3,myservo4,myservo5,myservo6,myservo7,myservo8,myservo9,myservo10,myservo11};
+  for( int i = 0; i < 12; i++ )
+  {
+myservo[i] = myservo_attached[i];
+}
 }
 
 
@@ -91,11 +94,11 @@ void hexaServoInit()
 void hexaHoming()
 {
   int i;
-
   for( i = 0; i < 12; i++ )
   {
 //  g_pwm.setPWM( hexaServoMap( i ), 0, hexaServoHome( i ) );
-    myservo[i].writeMicroseconds(hexaDCtoUS(hexaServoHome(i)));
+Serial.println( (hexaDCtoUS(hexaServoHome( i ))));
+    myservo[i].writeMicroseconds(hexaDCtoUS(hexaServoHome( i )));
     g_hexaPos[ i ] = hexaServoHome( i );
   }
 }

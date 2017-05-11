@@ -59,7 +59,7 @@ GNU General Public License for more details.
 // $$$$$$$$$$$$ DEBUG ENABLE SECTION $$$$$$$$$$$$$$$$
 // to debug ps2 controller, uncomment these two lines to print out debug to uart
 
-//#define PS2X_DEBUG
+#define PS2X_DEBUG
 //#define PS2X_COM_DEBUG
 
 

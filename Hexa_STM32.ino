@@ -1,5 +1,7 @@
 #include "hexaServo.h"
-#include <PS2X_lib.h>
+#include "PS2X_lib.h"
+#include <SPI.h>
+
 
 
 int SPI_freq = 500000;    // 500kHz SPI frequency for PS2 controller
@@ -46,7 +48,7 @@ int pin_servo10 = 26;
 int pin_servo11 = 27;
 
 void setup(){
-
+  delay(5000);
 /* attaches the servo on the pin number
 /* 
  *  Servo mapping
@@ -60,40 +62,56 @@ void setup(){
 setting_pin_servo(pin_servo0,pin_servo1,pin_servo2,pin_servo3,pin_servo4,pin_servo5,pin_servo6,pin_servo7,pin_servo8,pin_servo9,pin_servo10,pin_servo11); 
 
 
-
-
-  Serial.begin(57600);
-  delay(4000);
-  Serial.println();
-  Serial.println( "Serial connexion established" );
+//  Serial.begin(57600);
+//  Serial.println();
+//  Serial.println( "Serial connexion established" );
 
    error = ps2x.config_gamepad(31);   //SPI number (SPI1 or SP2) is already defined when SPIClass is created. Here it is just to define the pin for attention
  
-  if (error == 1){
-    Serial.println();
-    Serial.println( "No PS2 gamepad found" );
-  }else{
-    Serial.println("PS2 gamepad found");
-  }
+ 
+ if(error == 0){
+   Serial.println("Found Controller, configured successful");
+   Serial.println("Try out all the buttons, X will vibrate the controller, faster as you press harder;");
+  Serial.println("holding L1 or R1 will print out the analog stick values.");
+  Serial.println("Go to www.billporter.info for updates and to report bugs.");
+ }
+   
+  else if(error == 1)
+   Serial.println("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips");
+   
+  else if(error == 2)
+   Serial.println("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips");
+   
+   //Serial.print(ps2x.Analog(1), HEX);
+ ps2x.enableRumble();              //enable rumble vibration motors
+ Serial.println("break 1 ");
+ 
+ ps2x.enablePressures();           //enable reading the pressure values from the buttons.  
+ Serial.println("break 2 ");
+ 
 
 
   hexaServoInit();
-  hexaHoming();
-  delay(1000);
+   Serial.println("break 3 ");
+ hexaHoming();
+   Serial.println("break 4 ");
+ delay(1000);
   hexaMove( 300, 0, 1, 0 );
-  Serial.println();
+   Serial.println("break 5 ");
+ Serial.println();
   Serial.println( "Home position set" );
 
 }
 
 void loop() {
 
-  ps2x.read_gamepad();
+  ps2x.read_gamepad(false, vibrate);  
 
 // Un pas en arriere à pleine vitesse  
 if(ps2x.Button(PSB_PAD_DOWN)){
   hexaMove( -1, 0, 1, height);
   ps2x.read_gamepad();
+    Serial.println( "PSB_PAD_DOWN" );
   }
   
 // Un pas en avant à pleine vitesse 
