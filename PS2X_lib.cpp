@@ -132,7 +132,7 @@ byte PS2X::config_gamepad(uint8_t att, uint8_t ack) {
    read_gamepad();
    
    //see if it talked
-   if(PS2data[1] != 0x41 && PS2data[1] != 0x73 && PS2data[1] != 0x79){ //see if mode came back. If still anything but 41, 73 or 79, then it's not talking
+   if(PS2data[1] != 0x41 && PS2data[1] != 0x73 && PS2data[1] != 0x79 && PS2data[1] != 0xF1 && PS2data[1] != 0xF3){ //see if mode came back. If still anything but 41, 73 or 79, then it's not talking
       #ifdef PS2X_DEBUG
         Serial.println("Controller mode not matched or no controller found");
         Serial.print("Expected 0x41 or 0x73, got ");
@@ -141,6 +141,14 @@ byte PS2X::config_gamepad(uint8_t att, uint8_t ack) {
      
      return 1; //return error code 1
     }
+
+/*
+     if(PS2data[1] == 0xF3){ //F3 means analog mode on wireless controller
+        Serial.print("Expected 0x41 or 0x73, got ");
+        Serial.println(PS2data[1], HEX);
+        return 4; //return error code 1
+    }
+*/
   
   //try setting mode, increasing delays if need be. 
   

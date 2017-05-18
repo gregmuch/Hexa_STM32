@@ -97,7 +97,7 @@ void hexaHoming()
   for( i = 0; i < 12; i++ )
   {
 //  g_pwm.setPWM( hexaServoMap( i ), 0, hexaServoHome( i ) );
-Serial.println( (hexaDCtoUS(hexaServoHome( i ))));
+//Serial.println( (hexaDCtoUS(hexaServoHome( i ))));
     myservo[i].writeMicroseconds(hexaDCtoUS(hexaServoHome( i )));
     g_hexaPos[ i ] = hexaServoHome( i );
   }
@@ -116,12 +116,14 @@ void hexaSetPos( int index, int pos )
   {
 //  g_pwm.setPWM( hexaServoMap( index ), 0, hexaServoHome( index ) + pos );
     myservo[index].writeMicroseconds(hexaDCtoUS(hexaServoHome(index)  + pos));
+//    Serial.println((hexaDCtoUS(hexaServoHome(index)  + pos)));
     g_hexaPos[ index ] = hexaServoHome( index ) + pos;
   }
   else
   {
 //  g_pwm.setPWM( hexaServoMap( index ), 0, hexaServoHome( index ) - pos );
     myservo[index].writeMicroseconds(hexaDCtoUS(hexaServoHome(index)  - pos));
+//    Serial.println((hexaDCtoUS(hexaServoHome(index)  - pos)));
     g_hexaPos[ index ] = hexaServoHome( index ) - pos;
   }
   delay( _STDBREAK_ );

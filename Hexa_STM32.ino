@@ -4,7 +4,7 @@
 
 
 
-int SPI_freq = 500000;    // 500kHz SPI frequency for PS2 controller
+int SPI_freq = 200000;    // 500kHz SPI frequency for PS2 controller
 SPIClass spi(2);          // SPI 2 used in this project
 PS2X ps2x(spi, SPI_freq); // create PS2 Controller Class
 
@@ -48,7 +48,7 @@ int pin_servo10 = 26;
 int pin_servo11 = 27;
 
 void setup(){
-  delay(5000);
+  delay(2500);
 /* attaches the servo on the pin number
 /* 
  *  Servo mapping
@@ -83,23 +83,22 @@ setting_pin_servo(pin_servo0,pin_servo1,pin_servo2,pin_servo3,pin_servo4,pin_ser
    Serial.println("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips");
    
    //Serial.print(ps2x.Analog(1), HEX);
- ps2x.enableRumble();              //enable rumble vibration motors
- Serial.println("break 1 ");
- 
- ps2x.enablePressures();           //enable reading the pressure values from the buttons.  
- Serial.println("break 2 ");
- 
+// ps2x.enableRumble();              //enable rumble vibration motors
 
+ //ps2x.enablePressures();           //enable reading the pressure values from the buttons.  
 
   hexaServoInit();
-   Serial.println("break 3 ");
+
  hexaHoming();
-   Serial.println("break 4 ");
+
+
+/*
+while (error != 4){
+error = ps2x.config_gamepad(31);
+Serial.println("waiting for analog mode");
  delay(1000);
-  hexaMove( 300, 0, 1, 0 );
-   Serial.println("break 5 ");
- Serial.println();
-  Serial.println( "Home position set" );
+}
+*/
 
 }
 
@@ -107,11 +106,14 @@ void loop() {
 
   ps2x.read_gamepad(false, vibrate);  
 
+// delay(500);
+
+
 // Un pas en arriere à pleine vitesse  
 if(ps2x.Button(PSB_PAD_DOWN)){
   hexaMove( -1, 0, 1, height);
   ps2x.read_gamepad();
-    Serial.println( "PSB_PAD_DOWN" );
+//    Serial.println( "PSB_PAD_DOWN" );
   }
   
 // Un pas en avant à pleine vitesse 
@@ -167,10 +169,16 @@ else if(ps2x.Button(PSB_CIRCLE)){
   hexaRotate( -1, 1, height );
   ps2x.read_gamepad();
   }  
+// Danse de la vistoire
+else if(ps2x.Button(PSB_CROSS)){
+  
+  ps2x.read_gamepad();
+  }  
 
-
-else if( ps2x.Analog(PSS_LY) >=150 || ps2x.Analog(PSS_LY) <=110 ||ps2x.Analog(PSS_LX) >= 150 ||ps2x.Analog(PSS_LX) <= 110 ){
-
+else if((ps2x.Analog(PSS_LY) >=150 || ps2x.Analog(PSS_LY) <=110 ||ps2x.Analog(PSS_LX) >= 150 ||ps2x.Analog(PSS_LX) <= 110 )){
+    Serial.println( "analog move" );
+              Serial.println(ps2x.Analog(PSS_RX));
+        Serial.println(ps2x.Analog(PSS_LY));
 if (ps2x.Analog(PSS_LY) <= 40){ stepSize= 1;
 }else if (ps2x.Analog(PSS_LY) <= 70){ stepSize= 0.75;
 }else if (ps2x.Analog(PSS_LY) <= 100){ stepSize= 0.5;
@@ -194,6 +202,9 @@ if (ps2x.Analog(PSS_RX) <= 40){ curve= 1;
 }else curve= 0.0;
 
 
+
+
+         
   hexaMove( stepSize, curve, 1, height );
   ps2x.read_gamepad();
 }
